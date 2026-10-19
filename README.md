@@ -139,7 +139,7 @@ pages). The data comes from SQLBI's
 (10k orders, MIT license).
 
 The data is **not** in the repo. It's attached to the
-[`data-v1` release](../../releases/tag/data-v1) as CSV files, and Power Query
+[`data-v1` release](https://github.com/vlpatkosdani/powerbi-git-practice/releases/tag/data-v1) as CSV files, and Power Query
 downloads them from there when you refresh. The base URL is the `DataUrl`
 parameter (Transform data -> Manage parameters), so you can point it somewhere
 else if you need to.

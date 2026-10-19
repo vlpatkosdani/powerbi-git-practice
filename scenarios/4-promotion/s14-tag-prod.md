@@ -25,12 +25,11 @@ Two PROD deployments, both tagged:
 
 ```
 $ git tag -n
-data-v1         Initial commit
 v1.0.0          PROD deployment 2026-07-01
 v1.1.0          PROD deployment 2026-08-15
 ```
 
-(`data-v1` comes with the repo: it's the release that holds the CSV data. Ignore it here.)
+(If you cloned the original repo instead of your own copy, you'll also see `data-v1`: the release that holds the CSV data. Ignore it here.)
 
 The controller asks why Q3 margin is lower than in the July board pack. First, what did `Margin` look like in July?
 
