@@ -12,16 +12,30 @@ your result: `python tools/check.py <id>`.
 
 There are two kinds of scenarios.
 
-**Self-guided (most of them).** You start from `main`, prepare the starting
-point yourself (where needed you play both Anna and Ben), and follow the
-steps. Each file ends with a short "How to know it worked" checklist. No
+**A) Self-guided (most of them).** You start from `main`, prepare the starting
+point yourself (where needed you play both Anna and Ben, your teammates during
+the exercises), and follow the steps. Each file ends with a short "How to know it worked" checklist. No
 workflows needed: when you're done, run the check on your own machine (see
 below).
 
-**With an automatic check: s04, s05, s12 and s15.**
+**B) With an automatic check: s04, s05, s12 and s15.**
 
-1. **Make your own copy.** Click **Use this template → Create a new repository**
-   (public or private, your account). Everything runs in *your* copy.
+1. **Make your own copy.** You need a GitHub account for this.
+   - Open this repo's main page on GitHub (the `Code` tab).
+   - At the top right of the page, next to **Star**, click the green **Use this
+     template** button, then **Create a new repository**.
+
+     ![The Use this template button](scenarios/images/use-this-template.png)
+
+   - Pick your account as owner, keep the name (or choose your own), and pick
+     public or private. Both work. Leave **Include all branches** unticked:
+     you only need `main`, the scenarios create their own branches.
+   - Click **Create repository**.
+
+   Everything from here on happens in *your* copy, so you can't break anything
+   here, and nobody sees your practice branches unless you make your copy
+   public. Then clone your copy to your laptop (s01 shows how).
+
 2. **Start the scenario.** In your copy: **Actions → Start scenario → Run workflow**,
    pick the scenario. This creates its starting branches. Re-run it any time
    to start over.
@@ -63,10 +77,11 @@ the **integrated terminal**. Both are shown throughout.
   Desktop is optional for most scenarios.
 - Python 3.9+ for `tools/check.py`. No packages needed.
 - **Keep the repo in a short path**, like `C:\dev\powerbi-git-practice`, not deep
-  inside OneDrive. PBIR paths are long, and Windows stops at 260 characters: git
-  then shows report files as changed (`Filename too long`), and Desktop can't
-  detect external changes. Also run `git config --global core.longpaths true`
-  once.
+  inside OneDrive. A repo folder in OneDrive isn't a good idea anyway: OneDrive
+  sync can get in the way of git and cause odd changes and conflicts. PBIR paths
+  are long, and Windows stops at 260 characters: git then shows report files as
+  changed (`Filename too long`), and Desktop can't detect external changes. Also
+  run `git config --global core.longpaths true` once in your VS Code terminal.
 - Optional: the [Git Graph](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)
   extension for VS Code. A few VS Code UI steps (like revert in s15) use it.
 - New to PBIP and git? My [step-by-step setup guide](https://www.visuallabs.com/lab/articles/my-journey-with-ci-cd-in-power-bi-a-personal-tale-of-transformation-part-3) covers installing git
@@ -164,4 +179,4 @@ docs/maintainer.md         how to add a scenario, local testing, design notes
 
 ## License
 
-TBD
+MIT License, see [LICENSE](LICENSE).
