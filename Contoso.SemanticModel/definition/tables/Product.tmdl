@@ -1,0 +1,195 @@
+table Product
+	lineageTag: 788e06ac-419f-4210-be7d-232115f91c18
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: de8b0944-7e1e-43ab-9f3d-900e55258e76
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Code'
+		dataType: string
+		lineageTag: 28a3ad1a-2f34-4aaa-ac38-c0fbcbb98f81
+		summarizeBy: none
+		sourceColumn: Product Code
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Product Name'
+		dataType: string
+		lineageTag: a9984409-56bd-49c0-ab0e-0f1f5d1778df
+		summarizeBy: none
+		sourceColumn: Product Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Manufacturer
+		dataType: string
+		lineageTag: 06d0bedb-8e42-4069-b7d7-6273e4eaac2b
+		summarizeBy: none
+		sourceColumn: Manufacturer
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Brand
+		dataType: string
+		lineageTag: dde298a7-1cf1-49cb-8afd-51b2e855f8c6
+		summarizeBy: none
+		sourceColumn: Brand
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Color
+		dataType: string
+		lineageTag: d50599a0-bfc6-45ad-bbf9-7518a18d69c1
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Weight Unit Measure'
+		dataType: string
+		isHidden
+		lineageTag: 6445f84d-268d-4836-b857-a713609618c7
+		summarizeBy: none
+		sourceColumn: Weight Unit Measure
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Weight
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 49b67afc-46ae-4ebf-8553-c4872c4ce083
+		summarizeBy: none
+		sourceColumn: Weight
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Cost'
+		dataType: decimal
+		isHidden
+		formatString: 0.00
+		lineageTag: 7e8dbbf9-2d41-45d3-8ced-043c19f86f7f
+		summarizeBy: none
+		sourceColumn: Unit Cost
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: decimal
+		isHidden
+		formatString: 0.00
+		lineageTag: 84d52a8b-c0d0-4107-85bd-5b4d23ee0e63
+		summarizeBy: none
+		sourceColumn: Unit Price
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Subcategory Code'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 00a5e37d-b1d2-4973-b7df-2d1660444ba2
+		summarizeBy: none
+		sourceColumn: Subcategory Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subcategory
+		dataType: string
+		lineageTag: e8364556-174b-48bd-86b7-8ee993ed42b2
+		summarizeBy: none
+		sourceColumn: Subcategory
+		sortByColumn: 'Subcategory Code'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Category Code'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d8356f1b-3670-4a5e-b4c2-5478ea395412
+		summarizeBy: none
+		sourceColumn: Category Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: e2be4013-f3bc-4727-b3e5-53870f6e7017
+		summarizeBy: none
+		sourceColumn: Category
+		sortByColumn: 'Category Code'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	hierarchy Category-Subcategory
+		lineageTag: 5ec65955-39d4-40e1-bd2c-cf6893d6da39
+
+		level Category
+			lineageTag: 01e62e60-0cc5-436c-87c9-05a7bcf9a2a4
+			column: Category
+
+		level Subcategory
+			lineageTag: 1bd073a3-ffc9-4092-bdc0-b1c315a4ad75
+			column: Subcategory
+
+	partition Product-9730db17-a88f-43ad-b6f2-50ae8a679b18 = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents(DataUrl, [RelativePath = "product.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    #"Renamed Columns" = Table.RenameColumns(#"Promoted Headers", {{"ProductCode", "Product Code"}, {"ProductName", "Product Name"}, {"WeightUnit", "Weight Unit Measure"}, {"Cost", "Unit Cost"}, {"Price", "Unit Price"}, {"SubCategoryKey", "Subcategory Code"}, {"SubCategoryName", "Subcategory"}, {"CategoryKey", "Category Code"}, {"CategoryName", "Category"}}),
+				    #"Selected Columns" = Table.SelectColumns(#"Renamed Columns", {"ProductKey", "Product Code", "Product Name", "Manufacturer", "Brand", "Color", "Weight Unit Measure", "Weight", "Unit Cost", "Unit Price", "Subcategory Code", "Subcategory", "Category Code", "Category"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Selected Columns", {{"ProductKey", Int64.Type}, {"Product Code", type text}, {"Product Name", type text}, {"Manufacturer", type text}, {"Brand", type text}, {"Color", type text}, {"Weight Unit Measure", type text}, {"Weight", type number}, {"Unit Cost", Currency.Type}, {"Unit Price", Currency.Type}, {"Subcategory Code", Int64.Type}, {"Subcategory", type text}, {"Category Code", Int64.Type}, {"Category", type text}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

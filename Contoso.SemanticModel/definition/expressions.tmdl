@@ -1,0 +1,7 @@
+/// Base URL of the Contoso 10k CSV files (SQLBI Contoso Data Generator V2, MIT license).
+/// Points to the data-v1 release of the practice repo. Change it if you host the files elsewhere.
+expression DataUrl = "https://github.com/vlpatkosdani/powerbi-git-practice/releases/download/data-v1/" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: f577c9bc-2ee9-407e-8a4a-e55f1b030e29
+
+	annotation PBI_ResultType = Text
+

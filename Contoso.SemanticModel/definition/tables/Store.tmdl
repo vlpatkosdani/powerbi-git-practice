@@ -1,0 +1,128 @@
+table Store
+	lineageTag: aca9499e-9ded-4d0a-835d-f1f04b9d2e92
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d808ff79-ebed-42c7-a2cc-e5819db00ac0
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Store Code'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4cbe2709-3503-41b1-bd0a-02060b2181cf
+		summarizeBy: none
+		sourceColumn: Store Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 81211736-338f-448f-8ba1-c94a9d45cb93
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column State
+		dataType: string
+		lineageTag: d3331643-69c3-4865-a20e-a88041f23a9c
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Name
+		dataType: string
+		lineageTag: ab6c5a52-78f2-4d17-9886-d4405c05dedb
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Square Meters'
+		dataType: int64
+		formatString: #,0
+		lineageTag: c28257f1-4665-4f2a-820f-af2af0874374
+		summarizeBy: none
+		sourceColumn: Square Meters
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Open Date'
+		dataType: dateTime
+		isHidden
+		formatString: mm/dd/yyyy
+		lineageTag: af882c1a-2eb8-4c51-a83e-1e2e1f650443
+		summarizeBy: none
+		sourceColumn: Open Date
+
+		changedProperty = FormatString
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Close Date'
+		dataType: dateTime
+		isHidden
+		formatString: mm/dd/yyyy
+		lineageTag: adc3d2bd-b96c-43e3-9ab1-b8ba09ec0857
+		summarizeBy: none
+		sourceColumn: Close Date
+
+		changedProperty = FormatString
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Status
+		dataType: string
+		lineageTag: 9d1fa82f-d400-4ef6-a90a-9824c27acd5c
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	partition Store-4e2fa8b8-517f-4c17-ae5a-7d36051099bc = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents(DataUrl, [RelativePath = "store.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    #"Renamed Columns" = Table.RenameColumns(#"Promoted Headers", {{"StoreCode", "Store Code"}, {"CountryName", "Country"}, {"Description", "Name"}, {"SquareMeters", "Square Meters"}, {"OpenDate", "Open Date"}, {"CloseDate", "Close Date"}}),
+				    #"Selected Columns" = Table.SelectColumns(#"Renamed Columns", {"StoreKey", "Store Code", "Country", "State", "Name", "Square Meters", "Open Date", "Close Date", "Status"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Selected Columns", {{"StoreKey", Int64.Type}, {"Store Code", Int64.Type}, {"Country", type text}, {"State", type text}, {"Name", type text}, {"Square Meters", Int64.Type}, {"Open Date", type date}, {"Close Date", type date}, {"Status", type text}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

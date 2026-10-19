@@ -1,0 +1,189 @@
+table Customer
+	lineageTag: 7b434333-f698-4a4b-b0f5-afdd914a6865
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: cfa006ae-f97b-4261-b699-3101b659bdd7
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 7259f0fe-9bef-4c70-bf5c-d53f7681b7da
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Name
+		dataType: string
+		lineageTag: 9fa8a6d6-d4f7-4711-b9a0-b8f19f9da613
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Address
+		dataType: string
+		isHidden
+		lineageTag: a414833f-1ad9-41b1-b233-c8c0c56058f7
+		summarizeBy: none
+		sourceColumn: Address
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column City
+		dataType: string
+		lineageTag: 9b1b71d3-a566-4afe-b235-35c45fef26d2
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'State Code'
+		dataType: string
+		isHidden
+		lineageTag: ff91a573-eacc-4d5d-b678-61bee1de07d0
+		summarizeBy: none
+		sourceColumn: State Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column State
+		dataType: string
+		lineageTag: 42189f04-b230-4239-812f-844c00731b7b
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Zip Code'
+		dataType: string
+		isHidden
+		lineageTag: eb74c28b-a253-4076-b393-2b30cd2ec647
+		summarizeBy: none
+		sourceColumn: Zip Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Country Code'
+		dataType: string
+		isHidden
+		lineageTag: b2fc3024-2f46-4d50-a4c8-b04713427914
+		summarizeBy: none
+		sourceColumn: Country Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Country
+		dataType: string
+		lineageTag: 06eba712-eace-44c6-b3d7-b3739f4e2ab9
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Continent
+		dataType: string
+		lineageTag: df8d874c-d840-4fc6-930d-0a0fec9a5dd7
+		summarizeBy: none
+		sourceColumn: Continent
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column Birthday
+		dataType: dateTime
+		isHidden
+		formatString: mm/dd/yyyy
+		lineageTag: 3176a742-cb89-4782-ab14-45bea998ee26
+		summarizeBy: none
+		sourceColumn: Birthday
+
+		changedProperty = FormatString
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: 5620c72b-b9c9-4816-9c2a-6ccec01044f5
+		summarizeBy: none
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Geography
+		lineageTag: 07ae4e19-8d83-4ed4-99dc-5788344dd674
+
+		level Continent
+			lineageTag: 16856cfe-abc2-483c-9bc8-050b30040d1e
+			column: Continent
+
+		level Country
+			lineageTag: b6eec68e-716e-49b1-9409-e4eea2b5aab7
+			column: Country
+
+		level State
+			lineageTag: a741cd5b-f3ca-49ec-83dd-c7220320bb84
+			column: State
+
+		level City
+			lineageTag: d9990c9a-b040-49f3-a8eb-4a74272bbe24
+			column: City
+
+	partition Customer-bee8b62a-fee2-49b8-a0b6-5518e67a2d59 = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents(DataUrl, [RelativePath = "customer.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    #"Added Name" = Table.AddColumn(#"Promoted Headers", "Name", each [GivenName] & " " & [Surname], type text),
+				    #"Renamed Codes" = Table.RenameColumns(#"Added Name", {{"State", "State Code"}, {"Country", "Country Code"}, {"StreetAddress", "Address"}, {"ZipCode", "Zip Code"}}),
+				    #"Renamed Names" = Table.RenameColumns(#"Renamed Codes", {{"StateFull", "State"}, {"CountryFull", "Country"}}),
+				    #"Selected Columns" = Table.SelectColumns(#"Renamed Names", {"CustomerKey", "Gender", "Name", "Address", "City", "State Code", "State", "Zip Code", "Country Code", "Country", "Continent", "Birthday", "Age"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Selected Columns", {{"CustomerKey", Int64.Type}, {"Gender", type text}, {"Address", type text}, {"City", type text}, {"State Code", type text}, {"State", type text}, {"Zip Code", type text}, {"Country Code", type text}, {"Country", type text}, {"Continent", type text}, {"Birthday", type date}, {"Age", Int64.Type}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,23 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Customer","Date","Product","Sales","Store","Currency Exchange","DataUrl"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Customer
+ref table Date
+ref table Product
+ref table Sales
+ref table Store
+ref table 'Currency Exchange'
+
+ref cultureInfo en-US
+

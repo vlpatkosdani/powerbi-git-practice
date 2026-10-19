@@ -1,0 +1,9 @@
+# Power BI Desktop defaults (see Microsoft Learn: PBIP overview)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+__pycache__/

@@ -1,0 +1,79 @@
+# Grades the scenarios that have an automatic check (s04, s05, s12, s15) when
+# their branch is pushed. Result: the check mark next to the commit + the run
+# summary. PR grading (comment + label) is still supported for scenarios with
+# via "pr" in tools/scenarios.json; none use it right now.
+# The grader is taken from the DEFAULT branch, never from the PR itself, so a
+# PR can't change the rules it's graded by (and this stays safe if you later
+# switch to accepting PRs from forks via pull_request_target).
+#
+# Note: GitHub doesn't run pull_request workflows while the PR has merge
+# conflicts - resolve them first, then the check runs.
+name: Check submission
+
+on:
+  push:
+    # Only the scenarios with an automatic check (status "ready" in tools/scenarios.json)
+    branches: ['s04/shared', 's05/shared', 's12/promote', 's15/fix']
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write   # labels
+
+jobs:
+  grade:
+    if: ${{ github.event_name == 'push' || startsWith(github.head_ref, 's') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Load grader from default branch
+        run: |
+          mkdir -p "$RUNNER_TEMP/grader"
+          git archive "origin/${{ github.event.repository.default_branch }}" tools | tar -x -C "$RUNNER_TEMP/grader"
+
+      - name: Grade
+        id: grade
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          grader="$RUNNER_TEMP/grader/tools/checks/run.py"
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            python3 "$grader" --event push \
+              --head-ref "${{ github.ref_name }}" --head-sha "${{ github.sha }}" \
+              --out "$RUNNER_TEMP/report.md" || true
+          else
+            printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+            python3 "$grader" --event pr \
+              --head-ref "${{ github.head_ref }}" --base-ref "${{ github.base_ref }}" \
+              --head-sha "${{ github.event.pull_request.head.sha }}" \
+              --pr-body-file "$RUNNER_TEMP/pr-body.md" \
+              --out "$RUNNER_TEMP/report.md" || true
+          fi
+          cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment + label
+        if: ${{ github.event_name == 'pull_request' && steps.grade.outputs.result != 'skipped' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          RESULT: ${{ steps.grade.outputs.result }}
+        run: |
+          gh label create passed     --color 2da44e --description "Scenario check passed" --force
+          gh label create needs-work --color d73a4a --description "Scenario check failed" --force
+          gh pr comment "$PR" --body-file "$RUNNER_TEMP/report.md" --edit-last \
+            || gh pr comment "$PR" --body-file "$RUNNER_TEMP/report.md"
+          if [[ "$RESULT" == "passed" ]]; then
+            gh pr edit "$PR" --add-label passed --remove-label needs-work || gh pr edit "$PR" --add-label passed
+          else
+            gh pr edit "$PR" --add-label needs-work --remove-label passed || gh pr edit "$PR" --add-label needs-work
+          fi
+
+      - name: Fail the check if the scenario isn't solved
+        if: ${{ steps.grade.outputs.result == 'failed' }}
+        run: exit 1

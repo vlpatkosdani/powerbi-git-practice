@@ -1,0 +1,265 @@
+table Date
+	lineageTag: 273d2494-c83a-42d3-8f8c-d72efe7dc7aa
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: mm/dd/yyyy
+		lineageTag: 1289fba2-c208-4bcb-8a88-089165697419
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: ebc9c1f5-2b8d-469b-9db2-d5edc74705cb
+		summarizeBy: none
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = User
+
+	column 'Year Quarter'
+		dataType: string
+		isHidden
+		lineageTag: 6f2474a9-b9df-40ea-b164-3723ba491ff7
+		summarizeBy: none
+		sourceColumn: Year Quarter
+		sortByColumn: 'Year Quarter Number'
+
+		changedProperty = SortByColumn
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Year Quarter Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 31b94143-dc0b-452e-9b66-e149dadd60f8
+		summarizeBy: none
+		sourceColumn: Year Quarter Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Quarter
+		dataType: string
+		lineageTag: 0fd3b1b9-ed11-4107-a554-70da6f935847
+		summarizeBy: none
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Year Month'
+		dataType: string
+		lineageTag: 84ccc004-8d23-4f1c-aa0c-611d098a6e15
+		summarizeBy: none
+		sourceColumn: Year Month
+		sortByColumn: 'Year Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Year Month Short'
+		dataType: string
+		lineageTag: 502d2fc8-1d03-4260-96df-e19b61aa1d06
+		summarizeBy: none
+		sourceColumn: Year Month Short
+		sortByColumn: 'Year Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Year Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b38bf0c1-4d78-4df2-a433-f333f686e077
+		summarizeBy: none
+		sourceColumn: Year Month Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column Month
+		dataType: string
+		lineageTag: 794b6de6-e00d-4fc1-b0c1-5489f8d23de9
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: 'Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Month Short'
+		dataType: string
+		lineageTag: 209b2bbc-efc9-466d-ae02-116df0f6298f
+		summarizeBy: none
+		sourceColumn: Month Short
+		sortByColumn: 'Month Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4bd9b0f8-4db9-45b8-aea3-7b000c4d531f
+		summarizeBy: none
+		sourceColumn: Month Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Day of Week'
+		dataType: string
+		lineageTag: 58652893-6a45-4cb5-8bbf-6e9b52cbe9cf
+		summarizeBy: none
+		sourceColumn: Day of Week
+		sortByColumn: 'Day of Week Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Day of Week Short'
+		dataType: string
+		lineageTag: 1ae7db73-ecdf-4ae0-a655-d381c4d7e035
+		summarizeBy: none
+		sourceColumn: Day of Week Short
+		sortByColumn: 'Day of Week Number'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Day of Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 63a7504c-1d46-45ab-8e03-375572adfecb
+		summarizeBy: none
+		sourceColumn: Day of Week Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Working Day'
+		dataType: boolean
+		isHidden
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 07240336-3d1d-4f4a-88b5-29e956714d6b
+		summarizeBy: none
+		sourceColumn: Working Day
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Working Day Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1c7efc65-d811-4e05-a82b-91cd066191a4
+		summarizeBy: none
+		sourceColumn: Working Day Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'End of Month' = EOMONTH( 'Date'[Date], 0)
+		formatString: mmmm yyyy
+		lineageTag: c4fa20fb-6254-4274-8f38-a7a175fb3de4
+		summarizeBy: none
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	hierarchy Year-Quarter-Month
+		lineageTag: 8f5df7a1-5b14-4472-843e-f08cd4743e9a
+
+		level Year
+			lineageTag: 778f3bbe-12cc-4837-8271-4ac98748f9b9
+			column: Year
+
+		level Quarter
+			lineageTag: 7bd4b694-3ac1-419f-bb45-d35510fc302d
+			column: 'Year Quarter'
+
+		level Month
+			lineageTag: ea1055c9-80fe-4f17-95e5-89350a704b0f
+			column: 'Year Month Short'
+
+		level Date
+			lineageTag: ae5537af-347f-4ab2-9d3d-124dbe642e06
+			column: Date
+
+	hierarchy Year-Month
+		lineageTag: 81d7fbf3-dc96-4316-8013-51796733b75e
+
+		level Year
+			lineageTag: 2b95006f-4b1d-4bae-b561-7b9f09ae4ab4
+			column: Year
+
+		level Month
+			lineageTag: ea13144a-2b7e-4621-9e70-159f52aec4db
+			column: 'Year Month Short'
+
+		level Date
+			lineageTag: b05ec3eb-259c-43d4-91de-2794b4b413ca
+			column: Date
+
+	partition Date-44d762f0-a871-4687-b253-096276d9658b = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents(DataUrl, [RelativePath = "date.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    #"Renamed Columns" = Table.RenameColumns(#"Promoted Headers", {{"YearQuarter", "Year Quarter"}, {"YearQuarterNumber", "Year Quarter Number"}, {"YearMonth", "Year Month"}, {"YearMonthShort", "Year Month Short"}, {"YearMonthNumber", "Year Month Number"}, {"MonthShort", "Month Short"}, {"MonthNumber", "Month Number"}, {"DayofWeek", "Day of Week"}, {"DayofWeekShort", "Day of Week Short"}, {"DayofWeekNumber", "Day of Week Number"}, {"WorkingDay", "Working Day"}, {"WorkingDayNumber", "Working Day Number"}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Renamed Columns", {"DateKey"}),
+				    #"Working Day Flag" = Table.TransformColumns(#"Removed Columns", {{"Working Day", each _ = "1", type logical}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Working Day Flag", {{"Date", type date}, {"Year", Int64.Type}, {"Year Quarter", type text}, {"Year Quarter Number", Int64.Type}, {"Quarter", type text}, {"Year Month", type text}, {"Year Month Short", type text}, {"Year Month Number", Int64.Type}, {"Month", type text}, {"Month Short", type text}, {"Month Number", Int64.Type}, {"Day of Week", type text}, {"Day of Week Short", type text}, {"Day of Week Number", Int64.Type}, {"Working Day Number", Int64.Type}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

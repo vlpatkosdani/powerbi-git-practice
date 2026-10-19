@@ -1,0 +1,45 @@
+# Creates (or resets) the starting branches for one scenario in YOUR copy of
+# the repo. Actions tab -> "Start scenario" -> Run workflow -> pick an id.
+name: Start scenario
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: Scenario to start (re-running resets it)
+        required: true
+        type: choice
+        # Only scenarios with a setup script. Add new ids here when they are built.
+        options: [s04, s05, s12, s15]
+
+permissions:
+  contents: write
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0   # all branches + history: setup builds on module branches
+
+      - name: Build scenario branches
+        run: |
+          script="tools/setup/${{ inputs.scenario }}.sh"
+          if [[ ! -f "$script" ]]; then
+            echo "::error::${{ inputs.scenario }} has no setup script yet - see tools/scenarios.json for status."
+            exit 1
+          fi
+          bash "$script"
+
+      - name: Next steps
+        run: |
+          id="${{ inputs.scenario }}"
+          readme=$(ls scenarios/*/${id}-*.md | head -1)
+          {
+            echo "## ${id} is ready"
+            echo
+            echo "1. \`git fetch origin\` in your local clone"
+            echo "2. Follow [the scenario README](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_REF_NAME}/${readme})"
+            echo "3. Push the branch it asks for. The **Check submission** workflow checks it."
+          } >> "$GITHUB_STEP_SUMMARY"

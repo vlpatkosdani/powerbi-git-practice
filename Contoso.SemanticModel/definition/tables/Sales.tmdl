@@ -1,0 +1,227 @@
+table Sales
+	lineageTag: 94d3ea3b-4449-4e27-903d-c961f1df5413
+
+	measure 'Sales Amount' = SUMX ( Sales, Sales[Quantity] * Sales[Net Price] )
+		formatString: #,0.00
+		lineageTag: 7c5f9a14-3465-43ab-b1e5-aeb03f4fe8ad
+
+		changedProperty = FormatString
+
+	measure 'Total Cost' = SUMX ( Sales, Sales[Quantity] * Sales[Unit Cost] )
+		formatString: #,0.00
+		lineageTag: 416604ca-8ec2-48fb-97e3-568ef1a0c264
+
+		changedProperty = FormatString
+
+	measure Margin =
+			[Sales Amount] - [Total Cost]
+			// comment
+		formatString: #,0.00
+		lineageTag: e22dbc08-3844-485a-96d6-625d9d77e004
+
+		changedProperty = FormatString
+
+	measure 'Margin %' = DIVIDE ( [Margin], [Sales Amount] )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 78f2291d-1076-4202-b7bc-8d5dcd28f612
+
+		changedProperty = FormatString
+
+	measure 'Total Quantity' = SUM ( Sales[Quantity] )
+		formatString: #,0
+		lineageTag: 3c59d762-8e5b-4258-a132-1b6983b435ce
+
+		changedProperty = FormatString
+
+	column 'Order Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 91ea6a29-4cac-4426-9100-5736937552bf
+		summarizeBy: none
+		sourceColumn: Order Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Line Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 45bd733b-90c9-4ecc-93d6-37528e2e27b4
+		summarizeBy: none
+		sourceColumn: Line Number
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Order Date'
+		dataType: dateTime
+		isHidden
+		formatString: mm/dd/yyyy
+		lineageTag: 64b1d016-32bc-4c20-80d7-a5adc3b9ae88
+		summarizeBy: none
+		sourceColumn: Order Date
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Delivery Date'
+		dataType: dateTime
+		isHidden
+		formatString: mm/dd/yyyy
+		lineageTag: fb541e07-fdfb-40c9-9166-29777f049df4
+		summarizeBy: none
+		sourceColumn: Delivery Date
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b35afdc7-615a-4e88-8c36-36c10285f310
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f917bacb-2013-409d-9d94-8b40068bc9a7
+		summarizeBy: none
+		sourceColumn: StoreKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f011ea83-0d14-41e5-a9f2-8d532338586f
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quantity
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c8ca10d3-f54d-4c5d-b5ef-da854e2d7973
+		summarizeBy: none
+		sourceColumn: Quantity
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	column 'Unit Price'
+		dataType: decimal
+		isHidden
+		formatString: #,0.00
+		lineageTag: 8c2ee660-1f97-48df-a30b-9e6818ed5be9
+		summarizeBy: none
+		sourceColumn: Unit Price
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Net Price'
+		dataType: decimal
+		isHidden
+		formatString: #,0.00
+		lineageTag: 690e56a1-1bb6-4aa8-83bc-2b81fa8e4bf7
+		summarizeBy: none
+		sourceColumn: Net Price
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Unit Cost'
+		dataType: decimal
+		isHidden
+		formatString: #,0.00
+		lineageTag: 07c65c15-9e35-47c1-bbab-9cca274818c7
+		summarizeBy: none
+		sourceColumn: Unit Cost
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	column 'Currency Code'
+		dataType: string
+		isHidden
+		lineageTag: af1aa82f-8a7e-4d57-9da8-8d64994488a5
+		summarizeBy: none
+		sourceColumn: Currency Code
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isText":true}
+
+	column 'Exchange Rate'
+		dataType: double
+		isHidden
+		formatString: 0.0000
+		lineageTag: 7ddca17e-170a-4c4d-aa29-37f19394e838
+		summarizeBy: none
+		sourceColumn: Exchange Rate
+
+		changedProperty = IsHidden
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = User
+
+	partition Sales-4929449f-be0b-48cf-a44e-c644698415ba = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(Web.Contents(DataUrl, [RelativePath = "sales.csv"]), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				    #"Renamed Columns" = Table.RenameColumns(#"Promoted Headers", {{"OrderKey", "Order Number"}, {"LineNumber", "Line Number"}, {"OrderDate", "Order Date"}, {"DeliveryDate", "Delivery Date"}, {"UnitPrice", "Unit Price"}, {"NetPrice", "Net Price"}, {"UnitCost", "Unit Cost"}, {"CurrencyCode", "Currency Code"}, {"ExchangeRate", "Exchange Rate"}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns", {{"Order Number", Int64.Type}, {"Line Number", Int64.Type}, {"Order Date", type date}, {"Delivery Date", type date}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"ProductKey", Int64.Type}, {"Quantity", Int64.Type}, {"Unit Price", Currency.Type}, {"Net Price", Currency.Type}, {"Unit Cost", Currency.Type}, {"Currency Code", type text}, {"Exchange Rate", type number}}, "en-US")
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
