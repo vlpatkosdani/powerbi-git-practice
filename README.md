@@ -1,12 +1,14 @@
 # powerbi-git-practice: hands-on git scenarios for Power BI teams
 
+[![PBIP and Git: Six things every Power BI developer should practise](scenarios/images/cover.png)](https://fabricatedinsights.substack.com/p/pbip-and-git-six-things-every-power)
+
 Seventeen scenarios that take a Power BI team from "we just switched to PBIP" to
 promoting approved changes dev → UAT → prod with confidence. Each one is one
 git task on real TMDL/PBIR files, with the VS Code way and the terminal way
 shown side by side. Most take 10 to 20 minutes, and every one of them can check
 your result: `python tools/check.py <id>`.
 
-> Companion repo to the article *[title TBD]* on Fabricated Insights.
+> Companion repo to the article [*PBIP and Git: Six things every Power BI developer should practise*](https://fabricatedinsights.substack.com/p/pbip-and-git-six-things-every-power) on Fabricated Insights.
 
 ## How it works
 
@@ -49,6 +51,8 @@ below).
 4. **Push.** The **Check submission** workflow checks your branch and puts a ✅
    or ❌ next to your commit on GitHub; click it to see what passed. Push a fix
    and it checks again.
+
+   ![A failed Check submission run: the Margin % expression isn't the agreed one](scenarios/images/check-submission-fail.png)
 
 Only the end result is checked (files and, where it's the lesson, the shape of
 the history), so any correct approach passes.
