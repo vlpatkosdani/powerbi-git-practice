@@ -64,6 +64,15 @@ It looks at your local branches and prints what passed and what's still
 missing. For s04, s05, s12 and s15 it runs the same checks as the workflow, so
 you can check before you push.
 
+When everything is right, every line is `[ok]`:
+
+![A passing local check](scenarios/images/check-local-pass.png)
+
+When something's missing, it's marked `[x]`, and `[i]` lines give hints (here:
+the branch isn't pushed yet). Fix it and run the check again:
+
+![A failing local check](scenarios/images/check-local-fail.png)
+
 ## A note on terminal vs. VS Code UI
 
 For all git operations in these scenarios (creating branches, staging,

@@ -148,6 +148,12 @@ When you push, the **Check submission** workflow checks your branch. You'll see 
 
 Want to know before you push? Run `python tools/check.py s04` in the terminal. It runs the same checks on your local branch, and tells you if it isn't pushed yet.
 
+![check.py s04 passing](../images/check-local-pass.png)
+
+And this is what Accept Incoming Change (Ben's DAX), not pushed yet, looks like:
+
+![check.py s04 failing on the Margin % expression](../images/check-local-fail.png)
+
 ## Tips
 
 > Tip: Try the wrong answers too, then start over (see **Start over**): **Accept Incoming Change** gives Ben's DAX, and `git checkout --ours Contoso.SemanticModel/definition/tables/Sales.tmdl` takes Anna's whole file, which loses the folder. The check catches both.
