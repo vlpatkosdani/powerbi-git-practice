@@ -16,7 +16,7 @@ from pathlib import Path
 TOOLS = Path(__file__).resolve().parent
 sys.path.insert(0, str(TOOLS))
 os.chdir(TOOLS.parent)
-from checks.common import Ctx, git, resolve  # noqa: E402
+from checks.common import Ctx, git, resolve, resolve_remote_first  # noqa: E402
 
 MARK = {True: "[ok]", False: "[x] ", None: "[i] "}
 
@@ -34,12 +34,17 @@ def main() -> int:
         print(f"Branch `{local['head']}` not found. Did you do the Start or Prepare steps of {sid}?")
         print("If the branch lives on GitHub, run `git fetch origin` first.")
         return 1
-    base = resolve(local.get("base", local["head"]))
+    # Scenarios with a Start scenario button: their starting branches live on GitHub,
+    # and the workflow compares with origin/<base>, so do the same here.
+    graded = s["status"] == "ready"
+    base = (resolve_remote_first if graded else resolve)(local.get("base", local["head"]))
     if base is None:
         print(f"Branch `{local['base']}` not found. Run `git fetch origin` and try again.")
         return 1
     ctx = Ctx(head=git("rev-parse", head), base=base)
     importlib.import_module(f"checks.{sid}").run(ctx)
+    if graded and not ctx.pushed(local["head"]):
+        ctx.info(f"Not pushed yet: the GitHub check only sees what you push (`git push origin {local['head']}`).")
 
     print(f"{sid} · {s['title']}  (checking {head})\n")
     for ok, msg in ctx.results:

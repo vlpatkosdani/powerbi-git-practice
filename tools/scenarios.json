@@ -31,7 +31,7 @@
       "graded": [] },
     {"id": "s11", "time": "15 min", "level": "intermediate", "local": {"head": "s11/shared", "base": "main"}, "module": "3", "slug": "update-with-merge", "title": "Update your branch with a merge (the alternative to rebase)", "status": "self-guided",
       "graded": [] },
-    {"id": "s12", "time": "15 min (+20 optional)", "level": "intermediate", "local": {"head": "s12/promote", "base": "s12/uat"}, "module": "4", "slug": "cherry-pick", "title": "Cherry-pick to promote", "status": "ready",
+    {"id": "s12", "time": "15 min (+20 optional)", "level": "intermediate", "local": {"head": "s12/promote", "base": "s12/uat"}, "module": "4", "slug": "cherry-pick", "title": "Cherry-pick to promote (+ optional: a half-approved commit)", "status": "ready",
       "graded": [{"head": "^s12/promote$", "base": "s12/uat", "via": "push"}] },
     {"id": "s13", "time": "20 min", "level": "intermediate", "local": {"head": "s13/dev", "base": "s13/prod"}, "module": "4", "slug": "hotfix-backport", "title": "Hotfix + backport to dev", "status": "self-guided",
       "graded": [] },

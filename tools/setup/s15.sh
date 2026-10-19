@@ -2,6 +2,7 @@
 # s15 - Revert a bad commit that is already on a shared branch
 source "$(dirname "$0")/_common.sh"
 start_from module/5-recovery
+retire s15/fix
 
 branch s15/shared "$BASE"
 

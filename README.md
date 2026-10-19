@@ -12,6 +12,9 @@ your result: `python tools/check.py <id>`.
 
 There are two kinds of scenarios.
 
+**First, make your own copy** (all scenarios need it, because you push to it):
+see step 1 under B below. Then clone your copy to your laptop (s01 shows how).
+
 **A) Self-guided (most of them).** You start from `main`, prepare the starting
 point yourself (where needed you play both Anna and Ben, your teammates during
 the exercises), and follow the steps. Each file ends with a short "How to know it worked" checklist. No
@@ -38,7 +41,8 @@ below).
 
 2. **Start the scenario.** In your copy: **Actions → Start scenario → Run workflow**,
    pick the scenario. This creates its starting branches. Re-run it any time
-   to start over.
+   to start over (each scenario's file has a short *Start over* note for your
+   local branches).
 
    ![Actions > Start scenario > Run workflow](scenarios/images/start-scenario-run-workflow.png)
 3. **Do the steps** in the scenario file.
@@ -104,11 +108,13 @@ The scenarios are plain git, and `tools/check.py` runs anywhere, so everything
 works in an Azure DevOps repo too. Only the two GitHub Actions workflows don't.
 What's different:
 
-- **Getting the repo:** `Repos` > `Import repository`, paste the GitHub URL. All
-  branches come along, including the `module/...` ones.
-- **No Start scenario button.** For s04, s05, s12 and s15, build the starting
-  branches yourself: `NO_PUSH=1 bash tools/setup/s04.sh` (Git Bash on Windows).
-  Then follow the steps and check with `python tools/check.py s04`.
+- **Getting the repo:** `Repos` > `Import repository`, paste the GitHub URL.
+- **No Start scenario button.** For s04, s05, s12 and s15, run the setup script
+  yourself, from your clone, on `main` (Git Bash on Windows):
+  `bash tools/setup/s04.sh`, then `git fetch origin`. It does what the button
+  does: builds the starting branches and pushes them to your Azure DevOps repo,
+  so the `origin/...` commands in the scenario work as written. Run it again to
+  start over. Check with `python tools/check.py s04`.
 - **Pull requests (s08)** live under `Repos` > `Pull requests`. The tip at the
   end of s08 shows what's different.
 
@@ -158,7 +164,7 @@ refresh to do them. Refresh when you want to see the numbers.
 | Branch | Purpose |
 |---|---|
 | `main` | Baseline model, scenario docs, tooling. The grader always runs from here. |
-| `module/<n>-<name>` | Starting point for a module's scenarios. |
+| `module/<n>-<name>` | Starting point for a module's scenarios. Created from `main` the first time you start one of its scenarios. |
 | `sNN/...` | A scenario's sandbox, created and reset by **Start scenario**. `sNN/shared` (or `dev`/`uat`/`prod`) plays the team branch. |
 
 ## Repo layout

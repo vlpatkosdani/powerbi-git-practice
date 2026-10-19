@@ -35,6 +35,8 @@ Why? Because "finished" on your laptop doesn't mean tested. The in-between branc
 * 4c33612 Baseline model
 ```
 
+*Hashes and the bottom commit will be different on your machine: it's whatever `main` points to in your copy.*
+
 Both are fine. The second one has a practical advantage: the whole feature is one merge commit, so you can undo it in one step later (that's s16).
 
 ## Start
@@ -54,6 +56,7 @@ Starting point: `main`. You prepare a develop branch and a finished feature bran
    git switch -c s03/develop main
    git switch -c s03/feature-order-measures
    ```
+   You're now on `s03/feature-order-measures`. Make the next two commits here, not on `s03/develop`.
 2. In Power BI Desktop, add a measure to `Sales`:
    ```dax
    Order Count = DISTINCTCOUNT ( Sales[Order Number] )
@@ -83,12 +86,12 @@ Starting point: `main`. You prepare a develop branch and a finished feature bran
    ```bash
    git merge s03/feature-order-measures
    ```
-6. Look at the history: `View` > `Source Control Graph` in VS Code, or `git log --graph --oneline -5`. Git did a fast-forward: `develop` simply moved forward.
+6. Look at the history: the Graph section in the VS Code Source Control panel, or `git log --graph --oneline -5`. Git did a fast-forward: `develop` simply moved forward.
 7. In Desktop, click `Apply external changes`: `Order Count` and `Average Price` are there.
-8. Optional: undo the merge with `git reset --hard HEAD~2` (only OK because you haven't pushed), merge again with `git merge --no-ff s03/feature-order-measures`, and compare the two graphs.
+8. Optional: undo the merge with `git reset --hard main` (`s03/develop` started from `main`; only OK because you haven't pushed), merge again with `git merge --no-ff --no-edit s03/feature-order-measures`, and compare the two graphs.
 
 ## How to know it worked
 
-- [ ] Both commits from the feature branch are on `s03/develop`
-- [ ] The graph looks like the one under "What it looks like"
+- [ ] Both commits were made on `s03/feature-order-measures` and are now on `s03/develop`
+- [ ] The graph looks like the fast-forward one under "What it looks like" (or the merge-commit one, if you did step 8)
 - [ ] `python tools/check.py s03` says all good (it checks the result for you)

@@ -1,4 +1,4 @@
-# s01 · Start using PBIP, set up repo and your first commits
+# s01 · Start using PBIP, set up the repo, first commits
 
 Module 0: Setup · self-guided: you prepare the starting point yourself, no automatic check
 
@@ -21,7 +21,7 @@ The second half is about commits. You don't have to commit everything you change
 
 ## Start
 
-Starting point: your copy of the repo, on a practice branch from `main`.
+Starting point: your own copy of the repo, on a practice branch from `main`. No copy yet? Make one first with `Use this template` (README, [How it works](../../README.md#how-it-works), step 1 "Make your own copy"). If you clone the original repo instead, you can't push, and s02 needs that.
 
 
 ## Steps
@@ -34,7 +34,7 @@ Starting point: your copy of the repo, on a practice branch from `main`.
    git config --global user.email "your.email@example.com"
    ```
    Every commit you make carries this name, that's how `git log` and `git blame` know who did what.
-2. Clone your copy of the repo:
+2. Clone your own copy of the repo (not the original one):
 
    **VS Code UI:** `Ctrl+Shift+P` > `Git: Clone`, paste the URL of your repo, pick a folder and click `Open` when VS Code asks.
 
@@ -94,7 +94,7 @@ Starting point: your copy of the repo, on a practice branch from `main`.
     ```dax
     Double Margin = [Margin] * 2
     ```
-14. Go to the `Demo` page, select the table visual, open the `Format` pane, go to `General` > `Effects` > `Background`, turn it on and pick a color.
+14. Go to the `Demo` page, select the matrix visual, open the `Format` pane, go to `General` > `Effects` > `Background`, turn it on and pick a color.
 15. Save: `Ctrl+S`.
 16. In the Source Control panel you'll see changes in both the report files and `Sales.tmdl`. Stage only the report files, **not** `Sales.tmdl`:
 
@@ -121,8 +121,8 @@ Starting point: your copy of the repo, on a practice branch from `main`.
 
 ## How to know it worked
 
-- [ ] `cache.abf` and `localSettings.json` never show up in the Source Control panel
+- [ ] `cache.abf` and `localSettings.json` never get committed (they only showed up in step 6, while the `#` was there)
 - [ ] `git log --oneline -3` shows `Added Avg Age measure` and `Background color for the Demo table`
-- [ ] `Avg Age` is in the `Sales` table, `Double Margin` isn't
+- [ ] `Avg Age` is in the `Sales` table, `Double Margin` isn't (and was never committed)
 - [ ] The background color commit changed only report files (click it in the Source Control Graph)
 - [ ] `python tools/check.py s01` says all good (it checks the result for you)

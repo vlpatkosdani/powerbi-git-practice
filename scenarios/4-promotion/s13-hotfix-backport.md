@@ -1,6 +1,6 @@
 # s13 · Hotfix + backport to dev
 
-Module 4: Promotion · self-guided: you prepare the starting point yourself, no automatic check
+Module 4: Promotion · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s13`
 
 ## Why this matters
 
@@ -24,6 +24,8 @@ The fix starts from PROD, not from dev, so nothing unreleased goes along. Then t
 * 42c1c8a Release 1.3
 ```
 
+*Commit hashes will be different on your machine.*
+
 The fix exists twice, with two different hashes, once on each line. That's expected. Skip the backport, and the next release from dev still has `COUNT ( Sales[Quantity] )` in it. The bug comes back, and this time nobody is looking for it.
 
 ## Start
@@ -34,14 +36,22 @@ Starting point: `main`. You prepare PROD (with a bug) and dev (with unreleased w
 
 **Prepare**
 
-1. Create `s13/prod` from `main`. Break `Total Quantity` in Desktop by changing it to `COUNT ( Sales[Quantity] )`, save, commit `Release 1.3`.
+1. Create `s13/prod` from `main`. Break `Total Quantity` in Desktop by changing it to `COUNT ( Sales[Quantity] )`, save, commit `Release 1.3`:
    ```bash
    git switch -c s13/prod main
+   # change Total Quantity in Desktop and save, then:
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Release 1.3"
    ```
-2. Create `s13/dev` from `s13/prod` and add unreleased work: `Order Count = DISTINCTCOUNT ( Sales[Order Number] )`, commit `Add Order Count (not released yet)`.
+2. Create `s13/dev` from `s13/prod` and add unreleased work to the `Sales` table: `Order Count = DISTINCTCOUNT ( Sales[Order Number] )`, save, commit `Add Order Count (not released yet)`:
    ```bash
    git switch -c s13/dev s13/prod
+   # add Order Count in Desktop and save, then:
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Add Order Count (not released yet)"
    ```
+
+   In VS Code you can do the same: stage the change with `+` in the Source Control panel, type the message and click `Commit`.
 
 **Fix PROD**
 
@@ -57,7 +67,15 @@ Starting point: `main`. You prepare PROD (with a bug) and dev (with unreleased w
    ```dax
    Total Quantity = SUM ( Sales[Quantity] )
    ```
-5. Save, then stage and commit with the message `Hotfix: Total Quantity back to SUM`.
+5. Save, then stage and commit with the message `Hotfix: Total Quantity back to SUM`:
+
+   **VS Code UI:** In the Source Control panel, click `+` next to `Sales.tmdl`, type the message and click `Commit`.
+
+   **Terminal:**
+   ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Hotfix: Total Quantity back to SUM"
+   ```
 6. Merge the hotfix into PROD:
    ```bash
    git switch s13/prod
@@ -71,14 +89,23 @@ Starting point: `main`. You prepare PROD (with a bug) and dev (with unreleased w
    git switch s13/dev
    git cherry-pick -x s13/hotfix
    ```
-8. Look at the graph (`git log --graph --oneline --all -6`): the fix is on both lines.
+8. Look at the graph: the fix is on both lines.
+   ```bash
+   git log --graph --oneline -6 s13/prod s13/dev
+   ```
 
 ## How to know it worked
 
 - [ ] `s13/prod`: `Total Quantity` is `SUM`, and there's no `Order Count`
 - [ ] `s13/dev`: `Total Quantity` is `SUM`, and `Order Count` is still there
-- [ ] `python tools/check.py s13` says all good (it checks the result for you)
+- [ ] `python tools/check.py s13` says all good
 
 ## Tips
 
 > Tip: In a real team, the hotfix goes into PROD through your normal release process (often a pull request). The point here is where the branch starts: PROD, not dev.
+
+> Tip: To start over, delete your local `s13/...` branches and begin again at step 1:
+> ```bash
+> git switch main
+> git branch -D s13/prod s13/dev s13/hotfix
+> ```

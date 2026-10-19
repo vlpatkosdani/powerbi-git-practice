@@ -1,6 +1,6 @@
 # s11 · Update your branch with a merge (the alternative to rebase)
 
-Module 3: Collaboration · self-guided: you prepare the starting point yourself, no automatic check
+Module 3: Collaboration · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s11` (no GitHub check)
 
 ## Why this matters
 
@@ -34,7 +34,7 @@ Merge the shared branch into your feature branch:
 
 ```
 $ git switch s11/feature
-$ git merge s11/shared
+$ git merge --no-edit s11/shared
 Auto-merging Contoso.SemanticModel/definition/tables/Sales.tmdl
 Merge made by the 'ort' strategy.
  Contoso.SemanticModel/definition/tables/Sales.tmdl | 3 ++-
@@ -62,7 +62,7 @@ Fast-forward
  1 file changed, 4 insertions(+)
 ```
 
-*Commit hashes will be different on your machine.*
+*Commit hashes (and the `Baseline model` commit at the bottom) will be different on your machine, and the line counts can differ a bit depending on how you set up the measures.*
 
 ### In short
 
@@ -71,7 +71,8 @@ Bring the shared branch's changes into your feature branch with a merge commit, 
 **Part 1: Merge shared into your feature branch**
 ```bash
 git switch s11/feature
-git merge s11/shared
+git merge --no-edit s11/shared
+git push
 ```
 
 **Part 2: Bring your feature branch into shared**
@@ -107,7 +108,7 @@ Starting point: `main`. You play yourself and Ben, the same way as in s10.
    git switch s11/shared
    ```
    In Desktop, click `Apply external changes`, then make two commits there: `Total Cost` to 0 decimals (`Total Cost: no decimals`), and `Sales Amount` into a `Sales` display folder (`Sales Amount: Sales folder`).
-5. Look at the graph (`View` > `Source Control Graph`, or `git log --graph --oneline --all -6`). Your branch and `s11/shared` have split. Write down the hash of `Add Order Count`.
+5. Look at the graph (`View` > `Source Control Graph`, or `git log --graph --oneline -6 s11/shared s11/feature`). Your branch and `s11/shared` have split. Write down the hash of `Add Order Count`.
 
 **Merge shared into your branch**
 
@@ -121,12 +122,12 @@ Starting point: `main`. You play yourself and Ben, the same way as in s10.
 
    **Terminal:**
    ```bash
-   git merge s11/shared
+   git merge --no-edit s11/shared
    ```
-   If the terminal opens an editor for the commit message, keep the default message, save and close it.
-8. Look at the graph again: the two lines join in a merge commit, and `Add Order Count` still has the same hash as in step 5.
+   `--no-edit` keeps git's default message (`Merge branch 's11/shared' into s11/feature`), so no editor opens. If you forget it and you end up in Vim, type `:wq` and press Enter.
+8. Look at the graph again (`git log --graph --oneline -6 s11/shared s11/feature`): the two lines join in a merge commit, and `Add Order Count` still has the same hash as in step 5.
 9. In Desktop, click `Apply external changes` and check that `Order Count` and both of Ben's changes are there.
-10. Push. No force needed:
+10. Push. No force needed (VS Code: `Sync Changes`):
     ```bash
     git push
     ```
@@ -141,9 +142,9 @@ Starting point: `main`. You play yourself and Ben, the same way as in s10.
 
 ## How to know it worked
 
-- [ ] The graph shows a merge commit on `s11/feature` with two parents
+- [ ] The graph shows a merge commit on `s11/feature` with two parents (`s11/shared` merged into your branch, not the other way round)
 - [ ] `Add Order Count` has the same hash as before the merge
-- [ ] `git push` worked without `--force`
+- [ ] `git push` after the merge worked without `--force`, so GitHub has the same `s11/feature` as you
 - [ ] `Order Count` and both of Ben's changes are in the model
 - [ ] Merging back into `s11/shared` was a fast-forward
 - [ ] `python tools/check.py s11` says all good (it checks the result for you)

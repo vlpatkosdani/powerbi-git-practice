@@ -1,6 +1,6 @@
 # s17 · Undo local commits with reset (and get them back with reflog)
 
-Module 5: Recovery · self-guided: you prepare the starting point yourself, no automatic check
+Module 5: Recovery · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s17`
 
 ## Why this matters
 
@@ -81,11 +81,15 @@ Starting point: `main`. Everything happens on your own branch, nothing gets push
    ```bash
    git switch -c s17/feature main
    ```
-2. In Power BI Desktop, add `Order Count = DISTINCTCOUNT ( Sales[Order Number] )`. Save, commit `Add Order Count`.
+2. In Power BI Desktop, add `Order Count = DISTINCTCOUNT ( Sales[Order Number] )` to the `Sales` table. Save, commit `Add Order Count`:
+   ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Add Order Count"
+   ```
 
 **Committed too much: `--mixed`**
 
-3. In Desktop, add `Average Price = DIVIDE ( [Sales Amount], [Total Quantity] )`. On the `Demo` page, also make the table's font smaller: this is the change that shouldn't be in the commit. Save and commit everything as `Add Average Price`:
+3. In Desktop, add `Average Price = DIVIDE ( [Sales Amount], [Total Quantity] )` to the `Sales` table. On the `Demo` page, also make the matrix visual's font smaller: this is the change that shouldn't be in the commit. Save and commit everything as `Add Average Price`:
    ```bash
    git add .
    git commit -m "Add Average Price"
@@ -101,17 +105,23 @@ Starting point: `main`. Everything happens on your own branch, nothing gets push
    ```
 6. Stage only `Sales.tmdl` and commit it again as `Add Average Price`. Then throw away the font change:
 
-   **VS Code UI:** Right-click `visual.json` > `Discard Changes`.
+   **VS Code UI:** Make sure only `Sales.tmdl` is under `Staged Changes`, type `Add Average Price` and click `Commit`. Then right-click `visual.json` > `Discard Changes`.
 
    **Terminal:**
    ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Add Average Price"
    git restore Contoso.Report/
    ```
 
 **Throw away an experiment: `--hard`**
 
-7. In Desktop, click `Apply external changes` first, so the font change is gone there too. Then change `Sales Amount` to use `Sales[Unit Price]` instead of `Sales[Net Price]`. Save, commit `Sales Amount: try Unit Price`.
-8. You decide it was a bad idea. Throw the commit away. Terminal only, there's no button for a hard reset in VS Code:
+7. In Desktop, click `Apply external changes` first, so the font change is gone there too. Then change `Sales Amount` to use `Sales[Unit Price]` instead of `Sales[Net Price]`. Save, commit `Sales Amount: try Unit Price`:
+   ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Sales Amount: try Unit Price"
+   ```
+8. You decide it was a bad idea. Throw the commit away. Use the terminal: VS Code's built-in Source Control has no hard reset (the optional Git Graph extension has one under `Reset current branch to this Commit...` > `Hard`):
    ```bash
    git reset --hard HEAD~1
    ```
@@ -123,7 +133,7 @@ Starting point: `main`. Everything happens on your own branch, nothing gets push
     ```bash
     git reflog -5
     ```
-    Look for `commit: Sales Amount: try Unit Price` and copy its hash.
+    Look for `commit: Sales Amount: try Unit Price` and copy its hash. You'll also see the first, too-big `Add Average Price` commit from step 3: leave that one alone.
 11. Put a branch on it, so it's easy to find again:
     ```bash
     git branch s17/experiment <hash>
@@ -137,7 +147,7 @@ Starting point: `main`. Everything happens on your own branch, nothing gets push
 - [ ] `Sales Amount` on `s17/feature` still uses `Net Price`
 - [ ] `s17/experiment` has the `Sales Amount: try Unit Price` commit
 - [ ] Nothing was pushed
-- [ ] `python tools/check.py s17` says all good (it checks the result for you)
+- [ ] `python tools/check.py s17` says all good
 
 ## Tips
 
@@ -145,6 +155,12 @@ Starting point: `main`. Everything happens on your own branch, nothing gets push
 
 > Tip: `--hard` also throws away changes you haven't committed, and those can't be found in the reflog. If you're not sure, commit or `git stash` first.
 
-> Tip: Already pushed to a branch only you use? Reset, then `git push --force-with-lease` (see s10). On a shared branch, use revert (s15).
+> Tip: In real work, if you already pushed to a branch only you use: reset, then `git push --force-with-lease` (see s10). On a shared branch, use revert (s15). Not in this scenario: here nothing should be pushed, and the check fails if `s17/feature` is on GitHub.
 
 > Tip: `git reset --soft HEAD~3` followed by one commit turns your last three commits into one. That's a quick local squash (s09).
+
+> Tip: To start over, delete your local `s17/...` branches and begin again at step 1:
+> ```bash
+> git switch main
+> git branch -D s17/feature s17/experiment
+> ```

@@ -1,6 +1,6 @@
 # s08 · Create a PR with a review checklist
 
-Module 3: Collaboration · self-guided: you prepare the starting point yourself, no automatic check
+Module 3: Collaboration · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s08` (no GitHub check)
 
 ## Why this matters
 
@@ -38,7 +38,7 @@ The report part you check for scope. Here it's one value in one visual on the De
                  }
 ```
 
-That matches "Demo page layout" in the PR title. If the same PR touched visuals on three other pages, that's the question to ask.
+That's the matrix's text size, and it matches "Demo page layout" in the PR title. If the same PR touched visuals on three other pages, that's the question to ask.
 
 The repo's PR template (`.github/pull_request_template.md`) gives the reviewer a checklist, so nothing depends on memory. GitHub puts it into the description of every new PR, you'll see it in step 5.
 
@@ -58,7 +58,7 @@ This is the one scenario where the pull request itself is the exercise.
    git push -u origin s08/shared
    git switch -c s08/feature
    ```
-2. In Power BI Desktop, change `Total Cost` to 0 decimals. On the `Demo` page, make the table's font smaller (`Format` pane > `Values` > font size). Save.
+2. In Power BI Desktop, change `Total Cost` to 0 decimals. On the `Demo` page, make the matrix's text smaller (select the matrix, `Format` pane > `Grid` > `Options` > text size, from 18 to 14). Save. If you change a different font setting, your `visual.json` diff will look a bit different from the one above; that's fine.
 3. Commit with the message `Total Cost format + Demo page layout`, and publish the branch:
 
    **VS Code UI:** Stage, commit, then `Publish Branch`.
@@ -77,8 +77,10 @@ This is the one scenario where the pull request itself is the exercise.
 6. Open the `Files changed` tab and review both kinds of change:
    - `Sales.tmdl`: read it like code. What changed, and does it make sense?
    - `visual.json`: check the scope. Does it only touch the Demo page, like the title says?
-7. Go back to the `Conversation` tab, edit the description, and tick each checklist item you actually checked.
-8. Merge the PR with `Merge pull request`.
+7. Go back to the `Conversation` tab, edit the description, and tick each checklist item you actually checked. Leave the rest unticked with a short note. Two items need a word:
+   - "Opened in Power BI Desktop after the merge/rebase": you can't do that before the merge. Tick it if you opened `s08/feature` in Desktop and the model loads, or come back after step 8 and tick it then.
+   - "BPA / validation run": BPA is the Best Practice Analyzer (in Tabular Editor), or whatever validation your pipeline runs. It's optional here: you can write "not needed, format change only" under **What changed and why**.
+8. Merge the PR with `Merge pull request` (the default `Create a merge commit`, not squash or rebase).
 
 ## How to know it worked
 

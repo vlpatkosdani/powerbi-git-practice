@@ -31,6 +31,15 @@ def resolve(name: str) -> str | None:
     return None
 
 
+def resolve_remote_first(name: str) -> str | None:
+    """Like resolve(), but prefer origin/<name>: Start scenario rebuilds the starting
+    branches on GitHub, so a local copy can be stale."""
+    for r in (f"origin/{name}", name):
+        if git_ok("rev-parse", "--verify", "-q", f"{r}^{{commit}}"):
+            return r
+    return None
+
+
 def remote_has(branch: str) -> bool:
     return git_ok("rev-parse", "--verify", "-q", f"refs/remotes/origin/{branch}")
 
@@ -83,6 +92,10 @@ class Ctx:
             capture_output=True, text=True,
         ).stdout.strip()
         return self.check(not hits, "No leftover conflict markers" + ("" if not hits else f":\n```\n{hits[:800]}\n```"))
+
+    def pushed(self, branch: str) -> bool:
+        """origin/<branch> exists and is exactly the commit being checked."""
+        return remote_has(branch) and git("rev-parse", f"origin/{branch}") == git("rev-parse", self.head)
 
     def contains_base(self) -> bool:
         return self.check(self.is_ancestor(self.base, self.head),

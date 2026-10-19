@@ -28,10 +28,11 @@ ef229f8 Add Order Count
 Only the middle one is approved. Copy just that one:
 
 ```
-$ git switch -c s12/promote origin/s12/uat
+$ git switch -c s12/promote --no-track origin/s12/uat
 $ git cherry-pick -x ffa81d8
 [s12/promote 6a61132] Add Average Price [APPROVED for UAT]
- Author: Ben Teammate <Ben-teammate@example.com>
+ Author: Ben Teammate <ben-teammate@example.com>
+ ...
 ```
 
 The new commit has a new hash (`6a61132`), but thanks to `-x` it remembers where it came from:
@@ -45,9 +46,11 @@ Add Average Price [APPROVED for UAT]
 
 That line is your answer when someone asks "how did this get into UAT?" a month from now.
 
+*Commit hashes will be different on your machine.*
+
 ## Start
 
-1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s12` and click `Run workflow`. Re-run it any time to start over.
+1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s12` and click `Run workflow`. Re-run it any time to start over (see [Start over](#start-over)).
 2. Get the new branches:
 
    **VS Code UI:** In the Source Control panel open the `...` menu and select `Fetch`.
@@ -63,7 +66,7 @@ Starting state: `s12/uat` and `s12/dev`. Dev has 3 commits that UAT doesn't, and
 
 1. See what's on dev but not on UAT:
 
-   **VS Code UI:** `View` > `Source Control Graph`, compare `s12/dev` and `s12/uat`.
+   **VS Code UI:** In the Source Control panel, look at the `Source Control Graph` section and compare `s12/dev` and `s12/uat`.
 
    **Terminal:**
    ```bash
@@ -76,8 +79,9 @@ Starting state: `s12/uat` and `s12/dev`. Dev has 3 commits that UAT doesn't, and
 
    **Terminal:**
    ```bash
-   git switch -c s12/promote origin/s12/uat
+   git switch -c s12/promote --no-track origin/s12/uat
    ```
+   `--no-track` matters: without it your new branch would track `s12/uat`, and a plain `git push` (or git's own hint) would push straight into UAT.
 3. Copy only the approved commit. Terminal, because the `-x` option isn't available in the VS Code UI:
    ```bash
    git cherry-pick -x <hash of the approved commit>
@@ -85,7 +89,7 @@ Starting state: `s12/uat` and `s12/dev`. Dev has 3 commits that UAT doesn't, and
 4. Open `Contoso.pbip` in Power BI Desktop: `Average Price` is there, `Order Count` isn't, and `Sales Amount` still uses `Net Price`.
 5. Push:
 
-   **VS Code UI:** Click `Publish Branch`.
+   **VS Code UI:** Click `Publish Branch`. (If VS Code shows `Sync Changes` instead, the branch tracks `s12/uat`: use the terminal command below.)
 
    **Terminal:**
    ```bash
@@ -101,6 +105,18 @@ When you push, the **Check submission** workflow checks your branch. You'll see 
 - `Order Count` and the `Sales Amount` experiment stayed on dev
 
 Want to know before you push? Run `python tools/check.py s12` in the terminal. It runs the same checks on your local branch.
+
+## Start over
+
+1. Re-run `Start scenario` for `s12` on GitHub. It resets `s12/uat` and `s12/dev` and deletes `s12/promote` on GitHub, but not on your laptop.
+2. Clean up your laptop:
+   ```bash
+   git switch main
+   git fetch origin --prune
+   git branch -D s12/promote
+   ```
+   (If you also want to redo the optional part, delete your local `s12/opt-...` branches the same way.)
+3. Begin again at [Steps](#steps).
 
 ## Going further (optional): a commit that's only half approved
 
@@ -194,13 +210,20 @@ b31c76d Add Product Count (approved part of a04bed1)
    ```bash
    git restore --staged --worktree Contoso.SemanticModel/definition/tables/Sales.tmdl
    ```
-9. Only `Product.tmdl` is left. Commit it with the message `Add Product Count (approved part)`.
+9. Only `Product.tmdl` is left. Commit it with the message `Add Product Count (approved part of <hash>)`, using the hash of the mixed commit:
+
+   **VS Code UI:** Type the message in the Source Control panel and click `Commit`.
+
+   **Terminal:**
+   ```bash
+   git commit -m "Add Product Count (approved part of <hash>)"
+   ```
 
 ### How to know it worked
 
 - [ ] `git log --oneline s12/opt-uat..s12/opt-release` shows two commits
 - [ ] On `s12/opt-release`: `Order Count` and `Product Count` are there, `Average Price` isn't, `Total Cost` still has 2 decimals
-- [ ] Or run `python tools/check.py s12`: it checks `s12/promote` and, if it exists, `s12/opt-release`
+- [ ] Or run `python tools/check.py s12`: it checks `s12/promote` and, if it exists, `s12/opt-release` (so create `s12/promote` first, otherwise the optional part isn't checked)
 
 ## Tips
 

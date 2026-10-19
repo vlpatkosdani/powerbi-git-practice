@@ -75,5 +75,6 @@ jobs:
           fi
 
       - name: Fail the check if the scenario isn't solved
-        if: ${{ steps.grade.outputs.result == 'failed' }}
+        # Anything but passed/skipped fails, also a grader crash that never printed a result.
+        if: ${{ steps.grade.outputs.result != 'passed' && steps.grade.outputs.result != 'skipped' }}
         run: exit 1

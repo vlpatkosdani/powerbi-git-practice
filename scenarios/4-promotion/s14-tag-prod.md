@@ -1,6 +1,6 @@
 # s14 · Tag what you deploy to PROD
 
-Module 4: Promotion · self-guided: you prepare the starting point yourself, no automatic check
+Module 4: Promotion · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s14`
 
 ## Why this matters
 
@@ -25,9 +25,12 @@ Two PROD deployments, both tagged:
 
 ```
 $ git tag -n
+data-v1         Initial commit
 v1.0.0          PROD deployment 2026-07-01
 v1.1.0          PROD deployment 2026-08-15
 ```
+
+(`data-v1` comes with the repo: it's the release that holds the CSV data. Ignore it here.)
 
 The controller asks why Q3 margin is lower than in the July board pack. First, what did `Margin` look like in July?
 
@@ -62,7 +65,7 @@ Without tags, you'd be guessing which commit was in PROD on which day, and it's 
 
 ![the v1.1.0 tag in the Source Control Graph](../images/s14-tag-in-graph.png)
 
-*TMDL is indented with tabs in the real files; it's shown with spaces here. Commit hashes and lineageTags will be different on your machine.*
+*TMDL is indented with tabs in the real files; it's shown with spaces here. Commit hashes and lineageTags will be different on your machine, and your graph may show other branches.*
 
 ## Start
 
@@ -77,12 +80,21 @@ Starting point: `main`. You create two tagged PROD deployments yourself.
    git switch -c s14/prod main
    git tag -a v1.0.0 -m "PROD deployment 2026-07-01"
    ```
-2. In Power BI Desktop, change `Total Cost` to include a 5% handling cost, save, commit `Total Cost: include 5% handling cost`:
+   You haven't committed anything yet, so `v1.0.0` sits on the same commit as `main`'s tip. That's fine: this is what was in PROD in July.
+2. In Power BI Desktop, change `Total Cost` in the `Sales` table to include a 5% handling cost, save, commit `Total Cost: include 5% handling cost`:
    ```dax
    Total Cost = SUMX ( Sales, Sales[Quantity] * Sales[Unit Cost] ) * 1.05
    ```
-3. Add `Order Count = DISTINCTCOUNT ( Sales[Order Number] )`, commit `Add Order Count`.
-4. Tag the August deployment:
+   ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Total Cost: include 5% handling cost"
+   ```
+3. Add `Order Count = DISTINCTCOUNT ( Sales[Order Number] )` to the `Sales` table, save, commit `Add Order Count`:
+   ```bash
+   git add Contoso.SemanticModel/definition/tables/Sales.tmdl
+   git commit -m "Add Order Count"
+   ```
+4. Tag the August deployment, on the `Add Order Count` commit (the one you're on now):
 
    **VS Code UI:** `Ctrl+Shift+P` > `Git: Create Tag`, name `v1.1.0`, message `PROD deployment 2026-08-15`.
 
@@ -103,14 +115,27 @@ Starting point: `main`. You create two tagged PROD deployments yourself.
    git diff v1.0.0 v1.1.0 -- "*.tmdl"
    git log --oneline v1.0.0..v1.1.0
    ```
-7. Write the answer into a new `CHANGELOG.md` (which measures changed between `v1.0.0` and `v1.1.0`, and why margin is lower) and commit it with the message `Changelog v1.0.0 to v1.1.0`.
+7. Write the answer into a new `CHANGELOG.md` (which measures changed between `v1.0.0` and `v1.1.0`, and why margin is lower) and commit it with the message `Changelog v1.0.0 to v1.1.0`:
+   ```bash
+   git add CHANGELOG.md
+   git commit -m "Changelog v1.0.0 to v1.1.0"
+   ```
 
 ## How to know it worked
 
 - [ ] `git tag -n` lists `v1.0.0` and `v1.1.0` with their messages
+- [ ] `git cat-file -t v1.0.0` prints `tag`, so it's an annotated tag (a lightweight tag prints `commit`; `git tag -n` can't tell them apart)
 - [ ] Your changelog names `Total Cost` as the reason margin went down
-- [ ] `python tools/check.py s14` says all good (it checks the result for you)
+- [ ] `python tools/check.py s14` says all good
 
 ## Tips
 
 > Tip: You don't need a GitHub release for this, the tag alone is enough. To share tags, push them: `git push origin --tags`.
+
+> Tip: To start over, delete the tags and your local branch, then begin again at step 1 (`git tag -a` refuses to reuse a tag name that already exists):
+> ```bash
+> git switch main
+> git tag -d v1.0.0 v1.1.0
+> git push origin --delete v1.0.0 v1.1.0   # only if you pushed the tags
+> git branch -D s14/prod
+> ```

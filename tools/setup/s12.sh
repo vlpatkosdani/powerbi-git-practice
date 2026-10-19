@@ -2,6 +2,7 @@
 # s12 - Cherry-pick one approved commit from dev to uat
 source "$(dirname "$0")/_common.sh"
 start_from module/4-promotion
+retire s12/promote
 
 branch s12/uat "$BASE"
 branch s12/dev s12/uat

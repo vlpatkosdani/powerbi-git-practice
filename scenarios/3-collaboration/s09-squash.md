@@ -1,6 +1,6 @@
 # s09 · Squash vs regular merge
 
-Module 3: Collaboration · self-guided: you prepare the starting point yourself, no automatic check
+Module 3: Collaboration · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s09` (no GitHub check)
 
 ## Why this matters
 
@@ -28,6 +28,10 @@ Five commits, and the end result is one new measure (`Margin per Unit`). Squash 
 ```
 $ git switch -c s09/squashed s09/shared
 $ git merge --squash s09/feature
+Updating 4c33612..43abe4e
+Fast-forward
+Squash commit -- not updating HEAD
+ ...
 $ git commit -m "Add Margin per Unit"
 
 $ git log --oneline -2
@@ -35,12 +39,16 @@ $ git log --oneline -2
 4c33612 Baseline model
 ```
 
+Don't let `Fast-forward` fool you: `Squash commit -- not updating HEAD` means nothing is committed yet. The changes are only staged, the `git commit` makes the one commit. (Hashes and the commit below yours will be different on your machine.)
+
 Same result, one commit. You can prove it: comparing the two branches shows no difference at all.
 
 ```
 $ git diff s09/feature s09/squashed
 $
 ```
+
+Compare that with a regular merge (`git merge --no-ff s09/feature`): the shared branch would get all five commits, "wip" to "final fix", plus a merge commit on top.
 
 ## Start
 
@@ -61,7 +69,7 @@ Starting point: `main`. You make the noisy commits yourself.
    - add `Margin per Unit = DIVIDE ( [Margin Amount], [Total Quantity] )`, commit `wip 2`
    - change `Margin per Unit` to `DIVIDE ( [Margin], [Total Quantity] )`, commit `really fix`
    - delete `Margin Amount`, commit `final fix`
-3. Look at the history (`View` > `Source Control Graph`, or `git log --oneline -6`). Five commits for one new measure.
+3. Look at the history (`View` > `Source Control Graph`, or `git log --oneline s09/shared..`). Five commits for one new measure.
 
 **Squash**
 
@@ -74,6 +82,7 @@ Starting point: `main`. You make the noisy commits yourself.
    git merge --squash s09/feature
    git commit -m "Add Margin per Unit"
    ```
+   The merge prints `Squash commit -- not updating HEAD`: it only stages the changes, so don't skip the `git commit`.
 
    ![squash commit](../images/s09-squash-commit.png)
 
@@ -86,10 +95,11 @@ Starting point: `main`. You make the noisy commits yourself.
 
 - [ ] `git log --oneline s09/shared..s09/squashed` shows exactly one commit
 - [ ] `git diff s09/feature s09/squashed` shows nothing
+- [ ] `Margin per Unit` is `DIVIDE ( [Margin], [Total Quantity] )` and `Margin Amount` is gone
 - [ ] `python tools/check.py s09` says all good (it checks the result for you)
 
 ## Tips
 
 > Tip: When you merge with a pull request on GitHub, the `Squash and merge` button does the same thing.
 
-> Tip: In this scenario we squashed all the commits of the branch into one. In real life that's not always what you want. Feel free to experiment with squashing only some of them, for example the last three: `git reset --soft HEAD~3`, then commit again.
+> Tip: In this scenario we squashed all the commits of the branch into one. In real life that's not always what you want. Feel free to experiment with squashing only some of them, for example the last three of the feature branch. Do it on a copy, so `s09/feature` stays as it is for the check: `git switch -c s09/try s09/feature`, then `git reset --soft HEAD~3` and commit again.

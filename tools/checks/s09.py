@@ -9,4 +9,5 @@ def run(c: Ctx) -> None:
     feat = resolve("s09/feature")
     c.check(feat is not None and not git("diff", feat, c.head),
             "Same result as `s09/feature`: `git diff` shows nothing")
-    c.check(c.measure(SALES, "Margin per Unit") is not None, "`Margin per Unit` is there")
+    c.measure_is(SALES, "Margin per Unit", ["DIVIDE ( [Margin], [Total Quantity] )"])
+    c.check(c.measure(SALES, "Margin Amount") is None, "`Margin Amount` (the helper from `wip`) is gone")

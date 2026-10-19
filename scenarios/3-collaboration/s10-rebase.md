@@ -1,6 +1,6 @@
 # s10 · Rebase (and why not to force-push shared branches)
 
-Module 3: Collaboration · self-guided: you prepare the starting point yourself, no automatic check
+Module 3: Collaboration · self-guided: you prepare the starting point yourself and check it locally with `python tools/check.py s10` (no GitHub check)
 
 ## Why this matters
 
@@ -44,10 +44,16 @@ Successfully rebased and updated refs/heads/s10/feature.
 * 4c33612 Baseline model
 ```
 
-One straight line. But look at the hash: `bee2089` became `9211a26`. Rebase doesn't move your commit, it creates a new one. That's why the push needs force:
+*Commit hashes (and the `Baseline model` commit at the bottom) will be different on your machine.*
+
+One straight line. But look at the hash: `bee2089` became `9211a26`. Rebase doesn't move your commit, it creates a new one. If you pushed the branch before, the server still has `bee2089`, so a normal push is rejected and the push needs force:
 
 ```
+$ git push
+ ! [rejected]        s10/feature -> s10/feature (non-fast-forward)
+...
 $ git push --force-with-lease
+ + bee2089...9211a26 s10/feature -> s10/feature (forced update)
 ```
 
 On your own branch that's fine. On a shared branch, everyone who pulled `bee2089` now has a commit that no longer exists on the server.
@@ -60,6 +66,7 @@ Replay your commits on top of the latest shared branch, then fast-forward the sh
 ```bash
 git switch s10/feature
 git rebase s10/shared
+git push --force-with-lease
 ```
 
 **Part 2: Fast-forward shared**
@@ -82,19 +89,28 @@ Starting point: `main`. You play yourself and Ben.
    git switch -c s10/feature
    ```
 2. On your branch, add `Order Count = DISTINCTCOUNT ( Sales[Order Number] )`, save, commit `Add Order Count`.
-3. As Ben, go back to `s10/shared`, click `Apply external changes` in Desktop, and make two commits there: `Total Cost` to 0 decimals (`Total Cost: no decimals`), and `Sales Amount` into a `Sales` display folder (`Sales Amount: Sales folder`).
+3. Push your branch, so you can see later what a rebase does to a pushed branch:
+
+   **VS Code UI:** `Publish Branch`.
+
+   **Terminal:**
+   ```bash
+   git push -u origin s10/feature
+   ```
+4. Now play Ben. Switch to `s10/shared`:
    ```bash
    git switch s10/shared
    ```
-4. Look at the graph (`View` > `Source Control Graph`, or `git log --graph --oneline --all -6`). Your branch and `s10/shared` have split.
+   In Desktop, click `Apply external changes`, then make two commits there: `Total Cost` to 0 decimals (`Total Cost: no decimals`), and `Sales Amount` into a `Sales` display folder (`Sales Amount: Sales folder`).
+5. Look at the graph (`View` > `Source Control Graph`, or `git log --graph --oneline -6 s10/shared s10/feature`). Your branch and `s10/shared` have split. Write down the hash of `Add Order Count`.
 
 **Rebase**
 
-5. Switch back to your branch:
+6. Switch back to your branch:
    ```bash
    git switch s10/feature
    ```
-6. Rebase it onto the latest `s10/shared`:
+7. Rebase it onto the latest `s10/shared`:
 
    **VS Code UI:** `Ctrl+Shift+P` > `Git: Rebase Branch...` > `s10/shared`.
 
@@ -102,25 +118,36 @@ Starting point: `main`. You play yourself and Ben.
    ```bash
    git rebase s10/shared
    ```
-7. Look at the graph again: one straight line, and your commit has a new hash.
-8. If you had pushed `s10/feature` before, a normal push is now rejected. Force it safely:
+8. Look at the graph again (`git log --graph --oneline -6 s10/shared s10/feature`): one straight line, and your commit has a new hash.
+9. Try a normal push first. It's rejected, because the server still has your old commit:
+   ```bash
+   git push
+   ```
+   ```
+    ! [rejected]        s10/feature -> s10/feature (non-fast-forward)
+   ...
+   hint: ... use 'git pull' before pushing again.
+   ```
+   **Don't follow that hint.** After a rebase, `git pull` would merge your old commit back in, and you'd have `Add Order Count` twice in the history. The same goes for VS Code's `Sync Changes` button, it pulls too. Force the push instead, safely:
    ```bash
    git push --force-with-lease
    ```
+   (VS Code hides force push behind the `git.allowForcePush` setting, so use the terminal here.)
 
 **Bring it back to shared**
 
-9. Merge your branch into `s10/shared`. Git does a fast-forward, because after the rebase your branch already has everything from shared on top:
-   ```bash
-   git switch s10/shared
-   git merge s10/feature
-   ```
+10. Merge your branch into `s10/shared`. Git does a fast-forward, because after the rebase your branch already has everything from shared on top:
+    ```bash
+    git switch s10/shared
+    git merge s10/feature
+    ```
 
 ## How to know it worked
 
 - [ ] One straight line in the graph, your commit on top
 - [ ] `Order Count` and both of Ben's changes are in the model
 - [ ] Your commit's hash is different from before the rebase
+- [ ] The normal `git push` was rejected, `git push --force-with-lease` worked
 - [ ] Merging back into `s10/shared` was a fast-forward
 - [ ] `python tools/check.py s10` says all good (it checks the result for you)
 

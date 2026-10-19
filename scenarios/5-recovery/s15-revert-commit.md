@@ -56,11 +56,11 @@ ff11e3a Tidy Total Quantity
 
 Nothing disappears from history, both good commits stay, and everyone can just pull.
 
-*TMDL is indented with tabs in the real files; it's shown with spaces here. Commit hashes and lineageTags will be different on your machine.*
+*TMDL is indented with tabs in the real files; it's shown with spaces here. Commit hashes and lineageTags will be different on your machine, and the commit below the three scenario commits may have a different name than `Baseline model`.*
 
 ## Start
 
-1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s15` and click `Run workflow`. Re-run it any time to start over.
+1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s15` and click `Run workflow`. Re-run it any time to start over (see [Start over](#start-over)).
 2. Get the new branches:
 
    **VS Code UI:** In the Source Control panel open the `...` menu and select `Fetch`.
@@ -80,11 +80,12 @@ Starting state: `s15/shared` with 3 commits on top: `Add Order Count` (good), `T
 
    **Terminal:**
    ```bash
-   git switch -c s15/fix origin/s15/shared
+   git switch -c s15/fix --no-track origin/s15/shared
    ```
+   `--no-track` matters: without it your new branch would track `s15/shared`, and a plain `git push` (or git's own hint) would push straight into the shared branch.
 2. Find the bad commit:
 
-   **VS Code UI:** `View` > `Source Control Graph`.
+   **VS Code UI:** In the Source Control panel, look at the `Source Control Graph` section.
 
    **Terminal:**
    ```bash
@@ -92,7 +93,7 @@ Starting state: `s15/shared` with 3 commits on top: `Add Order Count` (good), `T
    ```
 3. Revert it. Not the last commit, the one in the middle:
 
-   **VS Code UI:** In the Git Graph extension, right-click `Tidy Total Quantity` and select `Revert...`.
+   **VS Code UI:** This needs the optional Git Graph extension (see the README). Without it, use the terminal. In Git Graph, right-click `Tidy Total Quantity` and select `Revert...`.
 
    ![Revert in Git Graph](../images/s15-git-graph-revert.png)
 
@@ -108,7 +109,7 @@ Starting state: `s15/shared` with 3 commits on top: `Add Order Count` (good), `T
 5. Open `Contoso.pbip` in Power BI Desktop: `Total Quantity` is back to `SUM`, and both `Order Count` and `Product Count` are still there.
 6. Push:
 
-   **VS Code UI:** Click `Publish Branch`.
+   **VS Code UI:** Click `Publish Branch`. (If VS Code shows `Sync Changes` instead, the branch tracks `s15/shared`: use the terminal command below.)
 
    **Terminal:**
    ```bash
@@ -126,8 +127,19 @@ When you push, the **Check submission** workflow checks your branch. You'll see 
 
 Want to know before you push? Run `python tools/check.py s15` in the terminal. It runs the same checks on your local branch.
 
+## Start over
+
+1. Re-run `Start scenario` for `s15` on GitHub. It resets `s15/shared` and deletes `s15/fix` on GitHub, but not on your laptop.
+2. Clean up your laptop:
+   ```bash
+   git switch main
+   git fetch origin --prune
+   git branch -D s15/fix
+   ```
+3. Begin again at [Steps](#steps).
+
 ## Tips
 
-> Tip: Try `git reset --hard <hash>~1` first, push it, and watch the check fail. Then re-run Start scenario and do it with revert.
+> Tip: Try `git reset --hard <hash>~1` first, push it, and watch the check fail. Then [start over](#start-over) and do it with revert.
 
 > Tip: Reset isn't bad, it's just the wrong tool for a shared branch. s17 shows where it fits: commits that haven't left your laptop yet.

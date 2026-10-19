@@ -1,0 +1,15 @@
+# The repo stores LF. Model and report files are checked out with CRLF, the way
+# Power BI Desktop writes them, so a save in Desktop doesn't rewrite every line.
+* text=auto
+*.tmdl text eol=crlf
+*.pbip text eol=crlf
+*.pbir text eol=crlf
+*.pbism text eol=crlf
+*.platform text eol=crlf
+Contoso.*/**/*.json text eol=crlf
+
+# bash scripts must stay LF, also on Windows
+*.sh text eol=lf
+
+*.png binary
+*.gif binary

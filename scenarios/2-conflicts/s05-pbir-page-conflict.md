@@ -54,7 +54,7 @@ The only real risk with JSON: if you resolve it by hand and leave a comma or a b
 
 ## Start
 
-1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s05` and click `Run workflow`. Re-run it any time to start over.
+1. On GitHub, open your copy of the repo, go to `Actions` > `Start scenario` > `Run workflow`, pick `s05` and click `Run workflow`. To start over later, see **Start over** below.
 2. Get the new branches:
 
    **VS Code UI:** In the Source Control panel open the `...` menu and select `Fetch`.
@@ -66,6 +66,14 @@ The only real risk with JSON: if you resolve it by hand and leave a comma or a b
 
 Starting state: `s05/shared` with the baseline report (saved with the Demo page open). You create the two conflicting branches yourself.
 
+**Start over:** re-run Start scenario. It resets the branches in your copy of the repo (and deletes `s05/page-1` and `s05/page-2` there), not the ones on your laptop, so then run:
+```bash
+git switch main
+git fetch origin --prune
+git branch -D s05/shared s05/page-1 s05/page-2
+```
+and begin again from step 1 under Steps. (`git branch -D` complains about any branch you don't have yet; that's fine.) In the middle of a merge? Run `git merge --abort` first.
+
 ## Steps
 
 **First branch: Page 1**
@@ -76,8 +84,9 @@ Starting state: `s05/shared` with the baseline report (saved with the Demo page 
 
    **Terminal:**
    ```bash
-   git switch -c s05/page-1 origin/s05/shared
+   git switch -c s05/page-1 --no-track origin/s05/shared
    ```
+   `--no-track` keeps your page branch from tracking `s05/shared`, so a push from it can't land on the graded branch.
 2. Open `Contoso.pbip` in Power BI Desktop and click on **Page 1**.
 3. Save: `Ctrl+S`.
 4. Stage and commit:
@@ -92,7 +101,10 @@ Starting state: `s05/shared` with the baseline report (saved with the Demo page 
 
 **Second branch: Page 2**
 
-5. Create a branch `s05/page-2`, also from `origin/s05/shared` (same as step 1).
+5. Create a branch `s05/page-2`, also from `origin/s05/shared` (same as step 1):
+   ```bash
+   git switch -c s05/page-2 --no-track origin/s05/shared
+   ```
 6. In Desktop, click `Apply external changes`, then click on **Page 2** and save.
 7. Stage and commit with the message `switched to Page 2`.
 
@@ -111,7 +123,7 @@ Starting state: `s05/shared` with the baseline report (saved with the Demo page 
 10. Open `pages.json` in VS Code and pick one:
     - **Accept Current Change**: the report opens on Page 1
     - **Accept Incoming Change**: the report opens on Page 2
-    - **Manual**: type whichever page ID you want and delete the conflict markers
+    - **Manual**: type the page ID of Page 1 or Page 2 and delete the conflict markers (not Demo: the check expects Page 1 or Page 2)
 
     ![The pages.json conflict in VS Code](../images/s05-pages-json-conflict.png)
 11. Save the file, then stage and commit it:
@@ -121,8 +133,9 @@ Starting state: `s05/shared` with the baseline report (saved with the Demo page 
     **Terminal:**
     ```bash
     git add .
-    git commit
+    git commit --no-edit
     ```
+    `--no-edit` keeps git's default merge message, so no editor opens.
 12. In Desktop, click `Apply external changes` and check that it opens on the page you chose.
 13. Push `s05/shared`:
 
@@ -137,11 +150,12 @@ Starting state: `s05/shared` with the baseline report (saved with the Demo page 
 
 When you push, the **Check submission** workflow checks your branch. You'll see ✅ or ❌ next to your latest commit on GitHub; click it for the details. Push a fix and it checks again.
 
-- `pages.json` and all `visual.json` files are valid JSON
+- All report JSON files (`pages.json`, every `visual.json`, ...) are valid JSON, with no duplicate keys
 - No conflict markers
-- Both of your branches are merged into `s05/shared`
+- Both of your branches are merged into `s05/shared`: a merge commit, and a page commit from each branch
+- The report opens on Page 1 or Page 2 (not Demo)
 
-Want to know before you push? Run `python tools/check.py s05` in the terminal. It runs the same checks on your local branch.
+Want to know before you push? Run `python tools/check.py s05` in the terminal. It runs the same checks on your local branch, and tells you if it isn't pushed yet.
 
 ## Tips
 
